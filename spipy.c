@@ -53,7 +53,7 @@ typedef struct
     uint32_t msh;     /* current SPI max speed setting in Hz */
 } SPI;
 
-static PyObject * SpiError; // special exception
+static PyObject * SPIError; // special exception
 
 static PyObject *
 SPI_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
@@ -254,27 +254,27 @@ static PyObject *SPI_open(SPI *self, PyObject *args, PyObject *kwds)
     {
         char err_str[20 + MAXPATH];
         sprintf(err_str, "can't open device: %s", path);
-        PyErr_SetString(SpiError, err_str);
+        PyErr_SetString(SPIError, err_str);
         return 0; // trigger exception
     }
 
     if (ioctl(self->fd, SPI_IOC_RD_MODE, &tmp8) == -1)
     {
-        PyErr_SetString(SpiError, "can't get spi mode");
+        PyErr_SetString(SPIError, "can't get spi mode");
         return 0; // trigger exception
     }
 
     self->mode = tmp8;
     if (ioctl(self->fd, SPI_IOC_RD_BITS_PER_WORD, &tmp8) == -1)
     {
-        PyErr_SetString(SpiError, "can't get bits per word");
+        PyErr_SetString(SPIError, "can't get bits per word");
         return 0; // trigger exception
     }
 
     self->bpw = tmp8;
     if (ioctl(self->fd, SPI_IOC_RD_MAX_SPEED_HZ, &tmp32) == -1)
     {
-        PyErr_SetString(SpiError, "can't get max speed hz");
+        PyErr_SetString(SPIError, "can't get max speed hz");
         return 0; // trigger exception
     }
     self->msh = tmp32;
@@ -381,7 +381,7 @@ initspipy(void)
     PyModule_AddObject(m, "SPI", (PyObject *) &SPI_type);
 
     // make a new exception
-    SpiError = PyErr_NewException("spi.error", NULL, NULL);
-    Py_INCREF(SpiError);
-    PyModule_AddObject(m, "error", SpiError);
+    SPIError = PyErr_NewException("spi.error", NULL, NULL);
+    Py_INCREF(SPIError);
+    PyModule_AddObject(m, "error", SPIError);
 }
