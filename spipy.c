@@ -201,11 +201,27 @@ static PyObject* SPI_transfer(SPI *self, PyObject *args)
 #endif
 
     //return rx data
-    PyObject * rx_tuple = PyTuple_New(transfer_length);
-    for (i=0; i < transfer_length; i++)
-        PyTuple_SetItem(rx_tuple, i, PyInt_FromLong(rx_buf[i]));
+    PyObject * rx_list = PyList_New(transfer_length);
 
-    return rx_tuple;
+    if(rx_list != NULL)
+    {
+        for (i = 0; i < transfer_length; i++)
+        {
+            if(PyList_SetItem(rx_list, i, PyInt_FromLong(rx_buf[i])) != 0)
+            {
+                PyErr_SetString(PyExc_RuntimeError, "Error putting received data item in list");
+                return 0;
+            }
+        }
+    }
+    else
+    {
+        PyErr_SetString(PyExc_MemoryError, "Couldn't create received data list");
+        return 0;
+    }
+
+    Py_INCREF(rx_list);
+    return rx_list;
 }
 
 PyDoc_STRVAR(SPI_open_doc,
