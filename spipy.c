@@ -48,9 +48,9 @@ typedef struct
     PyObject_HEAD
 
     int fd;         /* open file descriptor: /dev/spi-X.Y */
-    uint8_t mode;     /* current SPI mode */
-    uint8_t bpw;     /* current SPI bits per word setting */
-    uint32_t msh;     /* current SPI max speed setting in Hz */
+    //uint8_t mode;   /* current SPI mode */
+    //uint8_t bpw;    /* current SPI bits per word setting */
+    //uint32_t msh;   /* current SPI max speed setting in Hz */
 } SPI;
 
 static PyObject * SPIError; // special exception
@@ -75,7 +75,8 @@ PyDoc_STRVAR(SPI_close_doc,
         "close()\n\n"
         "Disconnects the object from the interface.\n");
 
-static PyObject *SPI_close(SPI *self)
+static PyObject *
+SPI_close(SPI *self)
 {
     if ((self->fd != -1) && (close(self->fd) == -1))
     {
@@ -98,7 +99,8 @@ PyDoc_STRVAR(SPI_transfer_doc,
         "CS will be released and reactivated between blocks.\n"
         "delay specifies delay in usec between blocks.\n");
 
-static PyObject* SPI_transfer(SPI *self, PyObject *args)
+static PyObject *
+SPI_transfer(SPI *self, PyObject *args)
 {
     PyObject* obj;
     PyObject* seq;
@@ -216,7 +218,6 @@ static PyObject* SPI_transfer(SPI *self, PyObject *args)
     }
     else
     {
-        PyErr_SetString(PyExc_MemoryError, "Couldn't create received data list");
         return 0;
     }
 
@@ -229,7 +230,8 @@ PyDoc_STRVAR(SPI_open_doc,
         "Connects the object to the specified SPI device.\n"
         "open(X,Y) will open /dev/spidev-X.Y\n");
 
-static PyObject *SPI_open(SPI *self, PyObject *args, PyObject *kwds)
+static PyObject *
+SPI_open(SPI *self, PyObject *args, PyObject *kwds)
 {
     int bus, device;
     char path[MAXPATH];
@@ -283,7 +285,8 @@ static PyObject *SPI_open(SPI *self, PyObject *args, PyObject *kwds)
     return Py_None;
 }
 
-static int SPI_init(SPI *self, PyObject *args, PyObject *kwds)
+static int
+SPI_init(SPI *self, PyObject *args, PyObject *kwds)
 {
     int bus = -1;
     int client = -1;
@@ -324,44 +327,44 @@ static PyMethodDef SPI_methods[] =
 static PyTypeObject SPI_type =
 {
     PyObject_HEAD_INIT(NULL)
-    0,                 /* ob_size */
-    "SPI",             /* tp_name */
-    sizeof(SPI),     /* tp_basicsize */
-    0, /* tp_itemsize */
-    0, /* tp_dealloc */
-    0, /* tp_print */
-    0, /* tp_getattr */
-    0, /* tp_setattr */
-    0, /* tp_compare */
-    0, /* tp_repr */
-    0, /* tp_as_number */
-    0, /* tp_as_sequence */
-    0, /* tp_as_mapping */
-    0, /* tp_hash */
-    0, /* tp_call */
-    0, /* tp_str */
-    0, /* tp_getattro */
-    0, /* tp_setattro */
-    0, /* tp_as_buffer */
+    0,                  /* ob_size */
+    "SPI",              /* tp_name */
+    sizeof(SPI),        /* tp_basicsize */
+    0,                  /* tp_itemsize */
+    0,                  /* tp_dealloc */
+    0,                  /* tp_print */
+    0,                  /* tp_getattr */
+    0,                  /* tp_setattr */
+    0,                  /* tp_compare */
+    0,                  /* tp_repr */
+    0,                  /* tp_as_number */
+    0,                  /* tp_as_sequence */
+    0,                  /* tp_as_mapping */
+    0,                  /* tp_hash */
+    0,                  /* tp_call */
+    0,                  /* tp_str */
+    0,                  /* tp_getattro */
+    0,                  /* tp_setattro */
+    0,                  /* tp_as_buffer */
     Py_TPFLAGS_DEFAULT, /* tp_flags */
-    SPI_type_doc, /* tp_doc */
-    0, /* tp_traverse */
-    0, /* tp_clear */
-    0, /* tp_richcompare */
-    0, /* tp_weaklistoffset */
-    0, /* tp_iter */
-    0, /* tp_iternext */
-    SPI_methods, /* tp_methods */
-    0, /* tp_members */
-    0, /* tp_getset */
-    0, /* tp_base */
-    0, /* tp_dict */
-    0, /* tp_descr_get */
-    0, /* tp_descr_set */
-    0, /* tp_dictoffset */
+    SPI_type_doc,       /* tp_doc */
+    0,                  /* tp_traverse */
+    0,                  /* tp_clear */
+    0,                  /* tp_richcompare */
+    0,                  /* tp_weaklistoffset */
+    0,                  /* tp_iter */
+    0,                  /* tp_iternext */
+    SPI_methods,        /* tp_methods */
+    0,                  /* tp_members */
+    0,                  /* tp_getset */
+    0,                  /* tp_base */
+    0,                  /* tp_dict */
+    0,                  /* tp_descr_get */
+    0,                  /* tp_descr_set */
+    0,                  /* tp_dictoffset */
     (initproc)SPI_init, /* tp_init */
-    0, /* tp_alloc */
-    SPI_new, /* tp_new */
+    0,                  /* tp_alloc */
+    SPI_new,            /* tp_new */
 };
 
 #ifndef PyMODINIT_FUNC    /* declarations for DLL import/export */
